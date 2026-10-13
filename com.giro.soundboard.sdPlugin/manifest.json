@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "UUID": "com.giro.soundboard",
+  "Name": "Giro Soundboard",
+  "Version": "0.6.4.0",
+  "Author": "Giro",
+  "Description": "Sign in with Discord, auto-fill favorite keys, and stream sounds directly to this computer.",
+  "Category": "Giro Soundboard",
+  "CategoryIcon": "imgs/favorite",
+  "Icon": "imgs/plugin",
+  "CodePath": "bin/plugin.js",
+  "SDKVersion": 2,
+  "Nodejs": {
+    "Version": "24"
+  },
+  "Software": {
+    "MinimumVersion": "7.1"
+  },
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    },
+    {
+      "Platform": "mac",
+      "MinimumVersion": "12"
+    }
+  ],
+  "PropertyInspectorPath": "ui/settings.html",
+  "Actions": [
+    {
+      "UUID": "com.giro.soundboard.favorite",
+      "Name": "Favorite Sound",
+      "Tooltip": "Automatically fills a key with a favorite from your soundboard.",
+      "Icon": "imgs/favorite",
+      "Controllers": [
+        "Keypad"
+      ],
+      "States": [
+        {
+          "Image": "imgs/favorite",
+          "TitleAlignment": "middle",
+          "FontSize": 13
+        }
+      ],
+      "UserTitleEnabled": false
+    },
+    {
+      "UUID": "com.giro.soundboard.previous",
+      "Name": "Previous Favorites",
+      "Icon": "imgs/previous",
+      "Controllers": [
+        "Keypad"
+      ],
+      "States": [
+        {
+          "Image": "imgs/previous",
+          "TitleAlignment": "bottom",
+          "FontSize": 11
+        }
+      ],
+      "UserTitleEnabled": false
+    },
+    {
+      "UUID": "com.giro.soundboard.next",
+      "Name": "Next Favorites",
+      "Icon": "imgs/next",
+      "Controllers": [
+        "Keypad"
+      ],
+      "States": [
+        {
+          "Image": "imgs/next",
+          "TitleAlignment": "bottom",
+          "FontSize": 11
+        }
+      ],
+      "UserTitleEnabled": false
+    },
+    {
+      "UUID": "com.giro.soundboard.stop",
+      "Name": "Stop Playback",
+      "Icon": "imgs/stop",
+      "Controllers": [
+        "Keypad"
+      ],
+      "States": [
+        {
+          "Image": "imgs/stop",
+          "TitleAlignment": "bottom",
+          "FontSize": 11
+        }
+      ],
+      "UserTitleEnabled": false
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+process.chdir(import.meta.dirname);
+const {version}=JSON.parse(readFileSync('package.json','utf8'));
+const manifest=JSON.parse(readFileSync('com.giro.soundboard.sdPlugin/manifest.json','utf8'));
+if(manifest.Version!==version+'.0')throw new Error('Manifest and package versions must match.');
+const cli='node_modules/@elgato/cli/bin/streamdeck.mjs';
+execFileSync(process.execPath,[cli,'validate','com.giro.soundboard.sdPlugin','--no-update-check'],{stdio:'inherit'});
+execFileSync(process.execPath,[cli,'pack','com.giro.soundboard.sdPlugin','-o','dist','--no-update-check','--no-file-list','-f'],{stdio:'inherit'});
+execFileSync('python3',['package-release.py'],{stdio:'inherit'});

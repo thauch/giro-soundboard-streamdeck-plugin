@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Giro Soundboard settings</title>
+<style>[hidden]{display:none!important}body{font:12px system-ui;color:#eee;background:#2d2d2d;margin:16px}label{display:block;margin:16px 0 6px}input{box-sizing:border-box;width:100%;background:#202020;color:white;border:1px solid #666;border-radius:5px;padding:9px}input[type=range]{padding:0;accent-color:#69e2c2}button{border:1px solid #777;border-radius:5px;background:#414141;color:white;padding:9px 12px;margin:12px 6px 0 0;cursor:pointer}select,textarea{box-sizing:border-box;width:100%;background:#202020;color:white;border:1px solid #666;border-radius:5px;padding:9px;font:inherit}textarea{resize:vertical;min-height:65px}button:disabled{opacity:.5}p{line-height:1.6}#status{color:#80e8c5;overflow-wrap:anywhere}.note{color:#ccc}h3{margin:0}.code{color:#80e8c5;font-size:22px;letter-spacing:3px}</style>
+</head><body><h3>Giro Soundboard</h3>
+<p class="note">Sign in with Discord to load your favorites. Sounds stream directly to this computer’s audio output. No pairing code or open soundboard page needed.</p>
+<label for="url">Soundboard address</label><input id="url" type="url" placeholder="https://dirtydeedsgaming.com:8443" spellcheck="false">
+<button id="login">Sign in with Discord</button><button id="open">Open main soundboard</button>
+
+<section id="keyOptions">
+<label for="favorite">Sound for this button</label><select id="favorite"><option value="">Auto</option></select>
+<label for="customText">Button text (blank uses the sound name)</label><textarea id="customText" maxlength="500" placeholder="Optional custom label"></textarea>
+<label for="fontSize">Text size <output id="fontSizeLabel">20</output></label><input id="fontSize" type="range" min="8" max="28" value="20">
+<p class="note">Text wraps automatically and shrinks to fit. You can add your own line breaks.</p>
+<label for="output">Audio output for this button</label><select id="output"><option value="auto">System default</option></select>
+<button id="outputs">Refresh outputs</button><p id="outputsStatus" class="note"></p>
+<div id="pttOptions">
+<label for="pttMode">Push to talk</label><select id="pttMode"><option value="local">Local</option><option value="squad">Squad</option><option value="off">Off</option></select>
+<label for="squadKey">Squad key</label><input id="squadKey" value="J" maxlength="16" placeholder="J" spellcheck="false">
+<label for="localKey">Local key</label><input id="localKey" value="K" maxlength="16" placeholder="K" spellcheck="false">
+<p class="note">Holds the selected key while audio plays. Off plays audio without holding a key. Changes apply to the next play. Use a letter, digit, F1–F24, or a named key such as Space, Ctrl, or Shift. Windows only.</p>
+</div></section>
+<label for="volume">Local playback volume <output id="volumeLabel">100%</output></label><input id="volume" type="range" min="0" max="100" value="100">
+<button id="refresh">Refresh favorites</button><button id="disconnect">Sign out</button>
+<p id="status" role="status">Connecting to Stream Deck…</p>
+<p class="note">Place Favorite Sound keys where you want them; they fill automatically. Add Previous/Next to page through more favorites, and Stop to stop playback. Optional XL layouts can be imported manually from the download ZIP. Choose an audio output for each button (Windows). Volume changes apply to the next sound.</p>
+<script src="settings.js"></script></body></html>

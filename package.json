@@ -1,0 +1,19 @@
+{
+  "name": "giro-soundboard-streamdeck",
+  "version": "0.6.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.js",
+    "package": "node package-release.mjs"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "2.1.2"
+  },
+  "devDependencies": {
+    "@elgato/cli": "1.10.2",
+    "esbuild": "0.25.12",
+    "node": "24.14.0"
+  }
+}

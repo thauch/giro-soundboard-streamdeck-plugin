@@ -1,0 +1,8 @@
+node_modules/
+dist/
+com.giro.soundboard.sdPlugin/bin/
+com.giro.soundboard.sdPlugin/logs/
+com.giro.soundboard.sdPlugin/THIRD-PARTY-LICENSES.txt
+__pycache__/
+*.pyc
+.DS_Store

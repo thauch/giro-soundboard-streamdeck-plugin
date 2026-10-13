@@ -1,0 +1,20 @@
+ObjC.import('AVFoundation');
+ObjC.import('Foundation');
+ObjC.import('CoreMedia');
+function run(argv) {
+  const player=$.AVPlayer.playerWithURL($.NSURL.URLWithString(argv[0]));
+  player.volume=Number(argv[1]);
+  player.play();
+  const start=Date.now();
+  while(Number(player.status)===0 && Date.now()-start<18000)
+    $.NSRunLoop.currentRunLoop.runUntilDate($.NSDate.dateWithTimeIntervalSinceNow(.05));
+  if(Number(player.status)!==1)throw new Error('macOS could not open this audio stream.');
+  $.NSFileHandle.fileHandleWithStandardOutput.writeData($('READY\n').dataUsingEncoding($.NSUTF8StringEncoding));
+  while(Number(player.rate)>0 || Number(player.currentItem.playbackLikelyToKeepUp)===0) {
+    if(Number(player.status)===2)throw new Error('Audio stream failed.');
+    const current=Number($.CMTimeGetSeconds(player.currentTime)),duration=Number($.CMTimeGetSeconds(player.currentItem.duration));
+    if(Number.isFinite(duration) && duration>0 && current>=duration-.05)break;
+    $.NSRunLoop.currentRunLoop.runUntilDate($.NSDate.dateWithTimeIntervalSinceNow(.05));
+  }
+  player.pause();
+}
