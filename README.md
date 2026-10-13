@@ -1,13 +1,13 @@
 # Giro Soundboard Stream Deck Plugin
 
-Version **0.6.4**. Official Stream Deck SDK 2.1.2; manifest SDKVersion 2.
-Requires Stream Deck 7.1+, Windows 10+ or macOS 12+.
+Version **0.6.5**. Official Stream Deck SDK 2.1.2; manifest SDKVersion 2.
+Works with Stream Deck keypad buttons across device models. Requires Stream Deck 7.1+, Windows 10+ or macOS 12+. The bundled preconfigured profiles are optional layouts for the XL.
 
 ## Install and sign in
 
-1. Install Giro-Soundboard-v0.6.4.streamDeckPlugin by double-clicking it.
-   This updates the same Giro plugin; your existing XL profile can stay.
-2. Import Giro-Soundboard-XL.streamDeckProfile if you have not already done so.
+1. Install Giro-Soundboard-v0.6.5.streamDeckPlugin by double-clicking it.
+   This updates the same Giro plugin; your existing profile can stay.
+2. Drag Favorite Sound actions onto the buttons you want to use. XL owners can optionally import Giro-Soundboard-XL.streamDeckProfile.
 3. Select any Giro key and enter https://dirtydeedsgaming.com:8443 (or your soundboard address).
 4. Click **Sign in with Discord**. Your default browser opens the soundboard's secure login page.
 5. Authorize the soundboard on Discord. The plugin connects automatically after Discord returns you to the soundboard.
@@ -94,7 +94,7 @@ Python builds the XL profile archive and plugin icon.
 
 Tests cover browser authorization and OAuth return paths, native credential isolation and revocation, live favorites, ranged streaming through the loopback proxy, Stop cancellation, SDK key registration and paging, preservation of the typed URL while status polling runs, pinned favorites, saved key settings, custom label wrapping/XML escaping, device enumeration, selected-output propagation, PTT defaults and validation, key-down-before-audio sequencing, Stop and natural-end release, and Off-mode playback.
 
-Physical XL import/display and real Windows/macOS audio must still be checked on those systems. The profile uses Stream Deck's V1 archive layout; existing v0.1 profiles remain compatible with v0.2 actions.
+Physical device display/profile import and real Windows/macOS audio must still be checked on those systems. The profile uses Stream Deck's V1 archive layout; existing v0.1 profiles remain compatible with v0.2 actions.
 
 SDK documentation:
 - https://docs.elgato.com/streamdeck/sdk/v2/
@@ -105,12 +105,12 @@ SDK documentation:
 
 Repository name: `giro-soundboard-streamdeck-plugin`.
 
-The workflow in `.github/workflows/build-release.yml` builds, tests, and validates changes on `main` and pull requests. Pushing a tag that matches the package version (for example `v0.6.4`) also publishes a GitHub release with the installer, XL bundle, and SHA-256 checksums. The workflow uses GitHub's built-in repository token; no personal token needs to be stored in the repository.
+The workflow in `.github/workflows/build-release.yml` builds, tests, and validates changes on `main` and pull requests. Pushing a tag that matches the package version (for example `v0.6.5`) also publishes a GitHub release with the installer, Stream Deck bundle, and SHA-256 checksums. The workflow uses GitHub's built-in repository token; no personal token needs to be stored in the repository.
 
-Before tagging a new release, update both `package.json` / `package-lock.json` and the plugin manifest (`0.6.4` corresponds to manifest version `0.6.4.0`). Update the installation filename in this README, then build and test.
+Before tagging a new release, update both `package.json` / `package-lock.json` and the plugin manifest (`0.6.5` corresponds to manifest version `0.6.5.0`). Update the installation filename in this README, then build and test.
 
-    git tag v0.6.4
+    git tag v0.6.5
     git push origin main
-    git push origin v0.6.4
+    git push origin v0.6.5
 
 Generated installers and profiles belong in release downloads. `node_modules`, generated player bundles, runtime logs, and `dist` are excluded from Git. This repository contains the Stream Deck client; the soundboard server and Discord OAuth application run separately.

@@ -9,7 +9,7 @@ root = Path(__file__).resolve().parent
 dist = root / 'dist'
 version = json.loads((root / 'package.json').read_text())['version']
 installer = dist / f'Giro-Soundboard-v{version}.streamDeckPlugin'
-bundle = dist / f'Giro-StreamDeck-XL-v{version}.zip'
+bundle = dist / f'Giro-StreamDeck-v{version}.zip'
 copyfile(dist / 'com.giro.soundboard.streamDeckPlugin', installer)
 with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
     archive.write(installer, installer.name)

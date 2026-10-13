@@ -37,7 +37,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" dist/Giro-Soundboard-*.streamDeckPlugin dist/Giro-StreamDeck-XL-*.zip dist/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$RELEASE_TAG" dist/Giro-Soundboard-*.streamDeckPlugin dist/Giro-StreamDeck-v*.zip dist/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$RELEASE_TAG" dist/Giro-Soundboard-*.streamDeckPlugin dist/Giro-StreamDeck-XL-*.zip dist/SHA256SUMS.txt --verify-tag --generate-notes --title "Giro Soundboard Stream Deck $RELEASE_TAG" --repo "$GITHUB_REPOSITORY"
+            gh release create "$RELEASE_TAG" dist/Giro-Soundboard-*.streamDeckPlugin dist/Giro-StreamDeck-v*.zip dist/SHA256SUMS.txt --verify-tag --generate-notes --title "Giro Soundboard Stream Deck $RELEASE_TAG" --repo "$GITHUB_REPOSITORY"
           fi

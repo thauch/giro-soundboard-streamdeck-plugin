@@ -28,7 +28,7 @@ test('built SDK plugin registers, auto-fills keys, pages, uses account favorites
  api.listen(0,'127.0.0.1');await once(api,'listening');
  const wss=new WebSocketServer({host:'127.0.0.1',port:0});await once(wss,'listening');
  const info={application:{version:'7.1.0',platform:'windows',language:'en',platformVersion:'10'},
-   plugin:{uuid:'com.giro.soundboard',version:'0.6.4.0'},
+   plugin:{uuid:'com.giro.soundboard',version:'0.6.5.0'},
    devices:[{id:'deck',name:'XL',type:2,size:{columns:8,rows:4}}],
    devicePixelRatio:1,colors:{highlightColor:'#69e2c2'}};
  const child=spawn(process.execPath,['bin/plugin.js','-port',String(wss.address().port),
