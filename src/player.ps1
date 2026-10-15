@@ -52,7 +52,11 @@ try {
         if (-not $started -and [DateTime]::UtcNow -ge $deadline) {
             throw 'Windows could not start this audio stream. Check the selected output and sound format.'
         }
-        Start-Sleep -Milliseconds 50
+        if ($started) {
+            [Console]::Out.WriteLine('PROGRESS:' + [long]$player.PlaybackSession.Position.TotalMilliseconds + ':' + [long]$player.PlaybackSession.NaturalDuration.TotalMilliseconds)
+            [Console]::Out.Flush()
+        }
+        Start-Sleep -Milliseconds 100
     }
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)

@@ -23,3 +23,12 @@ test('custom labels render as safe SVG text instead of native cut-off titles',()
  assert(!svg.includes('<script>'));assert(svg.includes('&lt;script&gt;'));assert(svg.includes('&amp;'));
  assert(svg.includes('font-size="'));assert(svg.includes('text-anchor="middle"'));
 });
+
+test('playing keys show a clamped bottom progress bar without changing their label',()=>{
+ const svg=value=>Buffer.from(value.split(',')[1],'base64').toString();
+ assert(!svg(keyImage('a.mp3','My label')).includes('y="128"'));
+ const half=svg(keyImage('a.mp3','My label',20,.5));
+ assert(half.includes('My label'));assert(half.includes('width="62.00" height="6"'));
+ assert(svg(keyImage('a.mp3','My label',20,2)).includes('width="124.00" height="6"'));
+ assert(svg(keyImage('a.mp3','My label',20,-1)).includes('width="0.00" height="6"'));
+});

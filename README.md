@@ -1,11 +1,11 @@
 # Giro Soundboard Stream Deck Plugin
 
-Version **0.6.5**. Official Stream Deck SDK 2.1.2; manifest SDKVersion 2.
+Version **0.6.7**. Official Stream Deck SDK 2.1.2; manifest SDKVersion 2.
 Works with Stream Deck keypad buttons across device models. Requires Stream Deck 7.1+, Windows 10+ or macOS 12+. The bundled preconfigured profiles are optional layouts for the XL.
 
 ## Install and sign in
 
-1. Install Giro-Soundboard-v0.6.5.streamDeckPlugin by double-clicking it.
+1. Install Giro-Soundboard-v0.6.7.streamDeckPlugin by double-clicking it.
    This updates the same Giro plugin; your existing profile can stay.
 2. Drag Favorite Sound actions onto the buttons you want to use. XL owners can optionally import Giro-Soundboard-XL.streamDeckProfile.
 3. Select any Giro key and enter https://dirtydeedsgaming.com:8443 (or your soundboard address).
@@ -105,12 +105,12 @@ SDK documentation:
 
 Repository name: `giro-soundboard-streamdeck-plugin`.
 
-The workflow in `.github/workflows/build-release.yml` builds, tests, and validates changes on `main` and pull requests. Pushing a tag that matches the package version (for example `v0.6.5`) also publishes a GitHub release with the installer, Stream Deck bundle, and SHA-256 checksums. The workflow uses GitHub's built-in repository token; no personal token needs to be stored in the repository.
+The workflow in `.github/workflows/build-release.yml` builds, tests, and validates changes on `main` and pull requests. Pushing a tag that matches the package version (for example `v0.6.7`) also publishes a GitHub release with the installer, Stream Deck bundle, and SHA-256 checksums. The workflow uses GitHub's built-in repository token; no personal token needs to be stored in the repository.
 
-Before tagging a new release, update both `package.json` / `package-lock.json` and the plugin manifest (`0.6.5` corresponds to manifest version `0.6.5.0`). Update the installation filename in this README, then build and test.
+Before tagging a new release, update both `package.json` / `package-lock.json` and the plugin manifest (`0.6.7` corresponds to manifest version `0.6.7.0`). Update the installation filename in this README, then build and test.
 
-    git tag v0.6.5
+    git tag v0.6.7
     git push origin main
-    git push origin v0.6.5
+    git push origin v0.6.7
 
 Generated installers and profiles belong in release downloads. `node_modules`, generated player bundles, runtime logs, and `dist` are excluded from Git. This repository contains the Stream Deck client; the soundboard server and Discord OAuth application run separately.

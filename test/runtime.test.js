@@ -71,7 +71,7 @@ test('built SDK plugin registers, auto-fills keys, pages, uses account favorites
    await until(()=>commands.length===2);
    assert.equal(commands[1].file,'sound-29.mp3');
    emit('keyDown','stop','stop',31);
-   await until(()=>messages.some(e=>e.event==='showOk' && e.context==='stop'));
+   await until(()=>messages.some(e=>e.event==='setImage' && e.context==='stop' && e.payload.image?.startsWith('data:image/svg+xml;base64,')));
    assert.equal(commands.length,2);
    const marker=messages.length;favoriteCount=10;
    socket.send(JSON.stringify({event:'propertyInspectorDidAppear',action:'com.giro.soundboard.favorite',context:'favorite-0',device:'deck'}));

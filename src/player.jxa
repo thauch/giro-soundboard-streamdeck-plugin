@@ -10,10 +10,15 @@ function run(argv) {
     $.NSRunLoop.currentRunLoop.runUntilDate($.NSDate.dateWithTimeIntervalSinceNow(.05));
   if(Number(player.status)!==1)throw new Error('macOS could not open this audio stream.');
   $.NSFileHandle.fileHandleWithStandardOutput.writeData($('READY\n').dataUsingEncoding($.NSUTF8StringEncoding));
+  let lastProgress=0;
   while(Number(player.rate)>0 || Number(player.currentItem.playbackLikelyToKeepUp)===0) {
     if(Number(player.status)===2)throw new Error('Audio stream failed.');
     const current=Number($.CMTimeGetSeconds(player.currentTime)),duration=Number($.CMTimeGetSeconds(player.currentItem.duration));
     if(Number.isFinite(duration) && duration>0 && current>=duration-.05)break;
+    if(Number.isFinite(duration) && duration>0 && Number.isFinite(current) && Date.now()-lastProgress>=100){
+      lastProgress=Date.now();
+      $.NSFileHandle.fileHandleWithStandardOutput.writeData($('PROGRESS:'+Math.floor(current*1000)+':'+Math.floor(duration*1000)+'\n').dataUsingEncoding($.NSUTF8StringEncoding));
+    }
     $.NSRunLoop.currentRunLoop.runUntilDate($.NSDate.dateWithTimeIntervalSinceNow(.05));
   }
   player.pause();

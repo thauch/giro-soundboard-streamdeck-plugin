@@ -42,6 +42,7 @@ $currentOutput = ''
 $currentId = 0
 $active = $false
 $started = $false
+$lastProgress = [DateTime]::MinValue
 $parent = [Diagnostics.Process]::GetProcessById([int]$env:GIRO_PARENT_PID)
 $read = [GiroAudioInput]::Next()
 [Console]::Out.WriteLine('HOST_READY')
@@ -92,6 +93,11 @@ try {
   if ($active) {
    $state = $player.PlaybackSession.PlaybackState.ToString()
    if ($state -eq 'Playing') { $started = $true }
+   if ($started -and ([DateTime]::UtcNow - $lastProgress).TotalMilliseconds -ge 100) {
+    $lastProgress = [DateTime]::UtcNow
+    [Console]::Out.WriteLine('PROGRESS:' + $currentId + ':' + [long]$player.PlaybackSession.Position.TotalMilliseconds + ':' + [long]$player.PlaybackSession.NaturalDuration.TotalMilliseconds)
+    [Console]::Out.Flush()
+   }
    if (($started -and ($state -eq 'None' -or $state -eq 'Paused')) -or (-not $started -and [DateTime]::UtcNow -ge $deadline)) {
     $active = $false
     if (-not $started) { [Console]::Out.WriteLine('ERROR:' + $currentId + ':Windows could not start this audio stream.') }

@@ -8,8 +8,16 @@ const player=new SoundMixer();
 const client=new SoundboardClient(), visible=new Map(), pages=new Map(), painted=new Map();
 let outputs=[],outputsError='',outputLoading;
 let settings={}, sounds=[], ready=false, notice='Sign in with Discord to load your favorites.', revision=0, refreshing,login,playbackRequest=0;
+const confirmations=new Map();
+const CONFIRMATION_IMAGE='data:image/svg+xml;base64,'+Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144"><rect width="144" height="144" rx="14" fill="#141c27"/><circle cx="72" cy="72" r="39" fill="#294437"/><path d="m49 72 15 15 31-32" fill="none" stroke="#69e2c2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>').toString('base64');
+async function flashConfirmation(key){
+  clearTimeout(confirmations.get(key.id));
+  confirmations.set(key.id,setTimeout(()=>{confirmations.delete(key.id);void repaint().catch(error=>streamDeck.logger.warn(error.message));},250));
+  await repaint();
+}
 const DEFAULT_URL='https://dirtydeedsgaming.com:8443';
 player.onError=error=>{notice=error.message;tellInspector().catch(()=>{});};
+player.onProgress=()=>{void repaint().catch(error=>streamDeck.logger.warn(error.message));};
 async function saveSettings(){await streamDeck.settings.setGlobalSettings(settings);}
 const deviceId=key=>key.device.id;
 function slotsFor(device) {
@@ -33,11 +41,12 @@ async function repaint() {
     if(entry.kind==='favorite') {
       const sound=ready?resolveFavorite(sounds,entry.settings,page,slotFor(entry),size):undefined;
       title=!settings.token?'Sign in\nDiscord':!ready?'Offline\nReconnect':'';
-      image=sound?keyImage(sound.filename,entry.settings.customText || sound.displayname,entry.settings.fontSize || 20):ready?BLANK_KEY:'imgs/favorite.svg';
+      image=sound?keyImage(sound.filename,entry.settings.customText || sound.displayname,entry.settings.fontSize || 20,player.progressFor(sound.filename)):ready?BLANK_KEY:'imgs/favorite.svg';
     } else {
       if(entry.kind==='stop'){title='Stop';image='imgs/stop.svg';}
       else {const nav=navigationFor(entry.kind,page,sounds.length,size);title=nav.title;image=nav.image;}
     }
+    if(confirmations.has(entry.key.id)){title='';image=CONFIRMATION_IMAGE;}
     const state=JSON.stringify([title,image]);
     if(painted.get(entry.key.id)===state)return;
     await entry.key.setTitle(title);
@@ -87,7 +96,7 @@ class SoundboardAction extends SingletonAction {
     visible.set(ev.action.id,{key:ev.action,kind:this.kind,settings:ev.payload.settings || {}});
     await repaint();await refresh();
   }
-  async onWillDisappear(ev){visible.delete(ev.action.id);painted.delete(ev.action.id);await repaint();}
+  async onWillDisappear(ev){clearTimeout(confirmations.get(ev.action.id));confirmations.delete(ev.action.id);visible.delete(ev.action.id);painted.delete(ev.action.id);await repaint();}
   async onDidReceiveSettings(ev) {
     const entry=visible.get(ev.action.id);if(entry)entry.settings=ev.payload.settings || {};
     painted.delete(ev.action.id);await repaint();await tellInspector();
@@ -143,7 +152,7 @@ class SoundboardAction extends SingletonAction {
   async onKeyDown(ev) {
     try {
       const entry=visible.get(ev.action.id);
-      if(this.kind==='stop'){playbackRequest++;await player.stop();await ev.action.showOk();return;}
+      if(this.kind==='stop'){playbackRequest++;await player.stop();await flashConfirmation(ev.action);return;}
       if(!entry || !settings.token)throw new Error('Sign in with Discord in plugin settings.');
       if(this.kind==='next' || this.kind==='previous'){
         if(!ready)throw new Error('Soundboard disconnected.');
@@ -162,7 +171,7 @@ class SoundboardAction extends SingletonAction {
         if(sequence!==playbackRequest)return;
         await player.play(connection,sound.filename,settings.volume ?? 100,entry.settings.output || 'auto',holdKeyFor(entry.settings));
       }
-      await ev.action.showOk();
+      await flashConfirmation(ev.action);
     } catch(error){if(error.name==='AbortError')return;notice=error.message;await tellInspector();await ev.action.showAlert();}
   }
 }

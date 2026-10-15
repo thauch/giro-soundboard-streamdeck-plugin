@@ -82,3 +82,19 @@ test('a stale output/key transition cannot release the newest sound key',async()
   assert.equal(commands.length,2);
  }finally{player.ptt.release=async()=>{};await player.dispose();}
 });
+
+test('native progress parses split messages and ignores timing and completion from an older sound',async()=>{
+ const {player,children,commands}=fixture();const events=[];let finished=0;
+ player.onProgress=timing=>events.push(timing);player.onFinished=()=>finished++;
+ try{
+  await player.play(connection,'a.mp3');const first=commands.at(-1).id;
+  children[0].stdout.write(`PROGRESS:${first}:250:`);children[0].stdout.write('1000\n');
+  assert.deepEqual(events,[{positionMs:250,durationMs:1000}]);
+  await player.play(connection,'b.mp3');const current=commands.at(-1).id;
+  children[0].stdout.write(`PROGRESS:${first}:500:1000\nENDED:${first}\n`);
+  assert.equal(events.length,1);assert.equal(finished,0);
+  children[0].stdout.write(`PROGRESS:${current}:750:2000\nENDED:${current}\n`);
+  await player.queue;
+  assert.deepEqual(events[1],{positionMs:750,durationMs:2000});assert.equal(finished,1);
+ }finally{await player.dispose();}
+});

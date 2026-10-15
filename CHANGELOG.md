@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.7
+
+- Shortened the success checkmark to a 250 ms flash so playback progress returns sooner.
+
+## 0.6.6
+
+- Added a progress bar to playing sound keys using native playback position and duration.
+- Progress resets when a sound restarts, finishes, fails, or is stopped.
+
 ## 0.6.5
 
 - Removed XL-specific plugin/download branding; the plugin works with Stream Deck keypad buttons across device models.

@@ -43,7 +43,11 @@ export class WindowsStreamPlayer {
     while((end=buffer.indexOf('\n'))>=0){
      const line=buffer.slice(0,end).trim();buffer=buffer.slice(end+1);
      if(line==='HOST_READY'){ready=true;clearTimeout(timer);resolve();}
-     else if(line===`ENDED:${this.generation}`){const ended=this.generation;this.enqueue(async()=>{if(ended===this.generation){this.key='';await this.ptt.release();}}).catch(error=>this.onError?.(error));}
+     else if(line.startsWith('PROGRESS:')){
+      const timing=/^PROGRESS:(\d+):(\d+):(\d+)$/.exec(line);
+      if(timing && Number(timing[1])===this.generation)this.onProgress?.({positionMs:Number(timing[2]),durationMs:Number(timing[3])});
+     }
+     else if(line===`ENDED:${this.generation}`){const ended=this.generation;this.enqueue(async()=>{if(ended===this.generation){this.key='';await this.ptt.release();this.onFinished?.();}}).catch(error=>this.onError?.(error));}
      else if(line.startsWith('ERROR:')){const match=/^ERROR:(\d+):(.*)$/.exec(line);if(match && Number(match[1])===this.generation){const failed=this.generation;this.enqueue(async()=>{if(failed===this.generation){this.key='';await this.ptt.release();this.onError?.(new Error(match[2]));}}).catch(error=>this.onError?.(error));}}
     }
    });

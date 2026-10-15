@@ -33,3 +33,17 @@ test('navigation placeholders stay visible on a single page and at paging bounda
  assert.equal(navigationFor('next',2,65,29).enabled,false);
  assert.equal(navigationFor('previous',2,65,29).enabled,true);
 });
+
+test('progress follows the current sound and clears on restart, stop, completion and failure',async()=>{
+ const voice={play:async()=>{},stop:async()=>{}};
+ const mixer=new SoundMixer({createVoice:()=>voice});let updates=0;mixer.onProgress=()=>updates++;
+ await mixer.play({},'a.mp3');voice.onProgress({positionMs:250,durationMs:1000});
+ assert.equal(mixer.progressFor('a.mp3'),.25);assert.equal(mixer.progressFor('b.mp3'),null);
+ await mixer.play({},'a.mp3');assert.equal(mixer.progressFor('a.mp3'),null);
+ voice.onProgress({positionMs:1100,durationMs:1000});assert.equal(mixer.progressFor('a.mp3'),1);
+ voice.onFinished();assert.equal(mixer.progressFor('a.mp3'),null);
+ await mixer.play({},'a.mp3');voice.onProgress({positionMs:1,durationMs:0});assert.equal(mixer.progressFor('a.mp3'),null);
+ voice.onProgress({positionMs:500,durationMs:1000});await mixer.stop();assert.equal(mixer.progressFor('a.mp3'),null);
+ await mixer.play({},'b.mp3');voice.onProgress({positionMs:500,durationMs:1000});voice.onError(new Error('failed'));
+ assert.equal(mixer.progressFor('b.mp3'),null);assert(updates>5);
+});

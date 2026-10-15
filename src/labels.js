@@ -28,12 +28,14 @@ export function fitLabel(text,requested=20) {
   }
   return result;
 }
-export function keyImage(filename,text,requested=20) {
+export function keyImage(filename,text,requested=20,progress=null) {
   let hash=0;for(const char of filename)hash=(hash*31+char.charCodeAt(0))>>>0;
   const hue=hash%360,{lines,fontSize,lineHeight}=fitLabel(text,requested);
   const y=72-(lines.length-1)*lineHeight/2;
   const labels=lines.map((line,i)=>'<text x="72" y="'+(y+i*lineHeight)+'" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="'+fontSize+'" font-weight="600" fill="#f0f5fa">'+escapeXml(line)+'</text>').join('');
-  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144"><rect width="144" height="144" rx="14" fill="#141c27"/><rect x="5" y="5" width="134" height="134" rx="12" fill="hsl('+hue+',30%,18%)" stroke="hsl('+hue+',55%,60%)" stroke-width="3"/>'+labels+'</svg>';
+  const percent=Number.isFinite(progress)?Math.max(0,Math.min(1,progress)):null;
+  const bar=percent===null?'':'<rect x="10" y="128" width="124" height="6" rx="3" fill="#294437"/><rect x="10" y="128" width="'+(124*percent).toFixed(2)+'" height="6" rx="3" fill="#69e2c2"/>';
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144"><rect width="144" height="144" rx="14" fill="#141c27"/><rect x="5" y="5" width="134" height="134" rx="12" fill="hsl('+hue+',30%,18%)" stroke="hsl('+hue+',55%,60%)" stroke-width="3"/>'+labels+bar+'</svg>';
   return 'data:image/svg+xml;base64,'+Buffer.from(svg).toString('base64');
 }
 export function resolveFavorite(sounds,settings,page,slot,pageSize) {

@@ -14,7 +14,7 @@ const cancelled=()=>Object.assign(new Error('Playback cancelled.'),{name:'AbortE
 export class NativeAudioPlayer {
   constructor({platform=process.platform,spawn=nodeSpawn,fetcher=fetch,scriptDirectory=path.dirname(process.argv[1]),ptt,persistent=true}={}) {
     this.platform=platform;this.spawn=spawn;this.fetcher=fetcher;this.scriptDirectory=scriptDirectory;this.generation=0;this.ptt=ptt || (platform==='win32'?new WindowsPttBridge({spawn,scriptDirectory}):null);
-    if(platform==='win32' && persistent){this.warm=new WindowsStreamPlayer({spawn,fetcher,scriptDirectory,ptt:this.ptt});this.warm.onError=error=>this.onError?.(error);}
+    if(platform==='win32' && persistent){this.warm=new WindowsStreamPlayer({spawn,fetcher,scriptDirectory,ptt:this.ptt});this.warm.onError=error=>this.onError?.(error);this.warm.onProgress=timing=>this.onProgress?.(timing);this.warm.onFinished=()=>this.onFinished?.();}
   }
   async listOutputs() {
     if(this.platform!=='win32')return [];
@@ -87,11 +87,17 @@ export class NativeAudioPlayer {
       env:{...process.env,GIRO_AUDIO_URL:url,GIRO_AUDIO_VOLUME:String(level),GIRO_AUDIO_DEVICE:output || 'auto'}});
     this.child=child;
     await new Promise((resolve,reject)=>{
-      let started=false,prepared=false,output='',errorOutput='';
+      let started=false,prepared=false,output='',errorOutput='',progressBuffer='';
       const timeout=setTimeout(()=>{if(!started){child.kill();reject(new Error('Local audio could not start. Check your audio output and file format.'));}},40000);
       const clear=()=>clearTimeout(timeout);
       child.stdout.on('data',data=>{
-        output+=data;
+        progressBuffer+=data;let end;
+        while((end=progressBuffer.indexOf('\n'))>=0){
+          const line=progressBuffer.slice(0,end).trim();progressBuffer=progressBuffer.slice(end+1);
+          const timing=/^PROGRESS:(\d+):(\d+)$/.exec(line);
+          if(timing && generation===this.generation)this.onProgress?.({positionMs:Number(timing[1]),durationMs:Number(timing[2])});
+        }
+        output=(output+data).slice(-4096);
         if(output.includes('PREPARED') && !prepared){
           prepared=true;
           (async()=>{
